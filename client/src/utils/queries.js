@@ -22,6 +22,7 @@ export const GET_ME = gql`
         ...BookInfo
       }
     }
-  }
-  ${BOOK_FRAGMENT}
-`;
+  } 
+  
+  ${BOOK_FRAGMENT} 
+  `;
