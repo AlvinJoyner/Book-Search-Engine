@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-//Import the necessary hooks and components
+//Import the necessary hooks/components
 import { ADD_USER } from "../utils/mutations";
 import Auth from '../utils/auth';
 
