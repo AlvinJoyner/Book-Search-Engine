@@ -8,9 +8,9 @@ import {
   Row
 } from 'react-bootstrap';
 
-import Auth from '../utils/auth';
-import { saveBook, searchGoogleBooks } from '../utils/API';
-import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
+import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
+import { useMutation } from "@apollo/client";
+import { SAVE_BOOK } from "../utils/mutations";
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -23,6 +23,12 @@ const SearchBooks = () => {
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
+
+  // Set up mutation function using the useMutation hook
+// The `saveBook` function can be used to execute the SAVE_BOOK mutation
+const [saveBook] = useMutation(SAVE_BOOK);
+
+
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
@@ -36,7 +42,12 @@ const SearchBooks = () => {
     }
 
     try {
-      const response = await searchGoogleBooks(searchInput);
+     // Use the fetch function to send a GET request to the Google Books API
+// The API endpoint includes the search input in the query parameter to fetch book data based on the search input
+const response = await axios.get(
+  `https://www.googleapis.com/books/v1/volumes?q=${searchInput}`
+);
+
 
       if (!response.ok) {
         throw new Error('something went wrong!');
