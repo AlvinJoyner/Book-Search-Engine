@@ -1,21 +1,52 @@
+// Import required dependencies
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
-const routes = require('./routes');
+const { ApolloServer } = require('apollo-server-express');
+const { typeDefs, resolvers } = require('./schemas');
+const { myAuthMiddleware } = require('./utils/auth');
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+// Define a custom port or use the default port 3001
+const MY_PORT = process.env.PORT || 3001;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// Create an instance of Express named myApp
+const myApp = express();
 
-// if we're in production, serve client/build as static assets
+// Create an instance of Apollo Server named myServer
+const myServer = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: myAuthMiddleware, // Use custom authentication middleware
+});
+
+// Middleware for parsing request bodies
+myApp.use(express.urlencoded({ extended: true }));
+myApp.use(express.json());
+
+// Serve static assets if in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
+  myApp.use(express.static(path.join(__dirname, '../client/build')));
 }
 
-app.use(routes);
-
-db.once('open', () => {
-  app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
+// Route to serve the main HTML file
+myApp.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+
+// Function to start the Apollo Server
+const startMyApolloServer = async () => {
+  await myServer.start(); // Start the Apollo Server
+  myServer.applyMiddleware({ app: myApp }); // Apply Apollo Server middleware to the Express app
+
+  // Open the database connection
+  db.once('open', () => {
+    // Start the Express app on the custom port
+    myApp.listen(MY_PORT, () => {
+      console.log(`App server running on port ${MY_PORT}!`);
+      console.log(`Use GraphQL at http://localhost:${MY_PORT}${myServer.graphqlPath}`);
+    });
+  });
+};
+
+// Call the function to start the Apollo Server and Express app
+startMyApolloServer();
