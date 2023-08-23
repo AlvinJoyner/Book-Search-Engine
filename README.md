@@ -8,9 +8,18 @@ A fully functioning Google Books API search engine built with a RESTful API, and
 
 
 ### Usage
+Login/Sign-up for your profile
+<img width="1280" alt="image" src="https://github.com/AlvinJoyner/Book-Search-Engine/assets/124743421/cc8249f0-bbd5-48b3-ae3b-da72b9faedcb">
+
+Then select your book
+<img width="1264" alt="image" src="https://github.com/AlvinJoyner/Book-Search-Engine/assets/124743421/ac5be90b-8ff9-4f46-b1de-4cde69bc0782">
 
 
-
+save it to your profile
+ 
+<img width="1273" alt="image" src="https://github.com/AlvinJoyner/Book-Search-Engine/assets/124743421/97925f35-ea5f-4cf6-8f11-1ed09303c890">
+ Currently waiting on help from Tutor
+  
 
 
 ### Installation
@@ -26,7 +35,12 @@ A fully functioning Google Books API search engine built with a RESTful API, and
 - Node.js
 - npm (Node Package Manager)
 - MongoDB (Make sure you have a running MongoDB instance)
-- 
+- Apollo
+- GraphQl
+- Express
+- mongoose\
+- bcrypt
+- jsonwebtoken
 
 ## License 
 This project is  under the MIT license.
