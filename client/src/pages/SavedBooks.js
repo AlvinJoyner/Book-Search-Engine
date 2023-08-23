@@ -8,7 +8,7 @@ import { removeBookId } from "../utils/localStorage";
 
 const SavedBooks = () => {
   const { loading, data } = useQuery(GET_ME);
-  const userData = data?.me || {};
+  const userData = data?.me;
 
   const [removeBook] = useMutation(REMOVE_BOOK, {
     onCompleted: (data) => {
@@ -48,24 +48,26 @@ const SavedBooks = () => {
     return <h2>LOADING...</h2>;
   }
 
+  const savedBooks = userData?.savedBooks || [];
+
   return (
     <>
-      <div fluid className="text-light bg-dark p-5">
+      <div className="text-light bg-dark p-5">
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
       </div>
       <Container>
         <h2 className="pt-5">
-          {userData.savedBooks && userData.savedBooks.length
-            ? `Viewing ${userData.savedBooks.length} saved ${
-                userData.savedBooks.length === 1 ? "book" : "books"
+          {savedBooks.length
+            ? `Viewing ${savedBooks.length} saved ${
+                savedBooks.length === 1 ? "book" : "books"
               }:`
             : "You have no saved books!"}
         </h2>
         <Row>
-          {userData.savedBooks && userData.savedBooks.length ? (
-            userData.savedBooks.map((book) => (
+          {savedBooks.length > 0 ? (
+            savedBooks.map((book) => (
               <Col md="4" key={book.bookId}>
                 <Card border="dark">
                   {book.image ? (

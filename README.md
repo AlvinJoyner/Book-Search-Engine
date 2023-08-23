@@ -9,8 +9,7 @@ A fully functioning Google Books API search engine built with a RESTful API, and
 
 ### Usage
 
-1. Npm install to install all dependencies
-2. Then start application with npm run develop
+
 
 
 
@@ -18,7 +17,8 @@ A fully functioning Google Books API search engine built with a RESTful API, and
 
 1. Clone this repository to your local machine.
 2. Navigate to the project directory.
-
+3. Npm install to install all dependencies
+4. Then start application with npm sta
 
    
 ### Dependencies
