@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Card, Button, Row, Col } from 'react-bootstrap';
+import React from "react";
+import { Container, Card, Button, Row, Col } from "react-bootstrap";
 import { useQuery, useMutation } from "@apollo/client";
-import { REMOVE_BOOK } from "../utils/mutations"; //Import REMOVE_BOOK mutation
-import { GET_ME } from "../utils/queries"; // Import GET_ME query
-import Auth from "../utils/auth"; // Import Auth 
+import { REMOVE_BOOK } from "../utils/mutations";
+import { GET_ME } from "../utils/queries";
+import Auth from "../utils/auth";
 import { removeBookId } from "../utils/localStorage";
 
 const SavedBooks = () => {
@@ -12,14 +12,26 @@ const SavedBooks = () => {
 
   const [removeBook] = useMutation(REMOVE_BOOK, {
     onCompleted: (data) => {
-      const updatedUser = { ...userData };
-      updatedUser.savedBooks = updatedUser.savedBooks.filter(book => book.bookId !== data.removeBook.bookId);
-      setUserData(updatedUser);
-      removeBookId(data.removeBook.bookId);
+      // Get the removed book's ID from the mutation response
+      const removedBookId = data.removeBook.bookId;
+
+      // Update the user data by filtering out the removed book
+      const updatedUser = {
+        ...userData,
+        savedBooks: userData.savedBooks.filter(
+          (book) => book.bookId !== removedBookId
+        ),
+      };
+
+      // Update the user data in local state (use setUserData if available)
+      // setUserData(updatedUser); // Uncomment this if you have setUserData function
+
+      // Remove the book from local storage
+      removeBookId(removedBookId);
     },
     onError: (error) => {
       console.error(error);
-    }
+    },
   });
 
   const handleDeleteBook = async (bookId) => {
@@ -40,35 +52,45 @@ const SavedBooks = () => {
     }
   };
 
-  // if data isn't here yet, say so
   if (loading) {
     return <h2>LOADING...</h2>;
   }
 
   return (
     <>
-      <div fluid className='text-light bg-dark p-5'>
+      <div fluid className="text-light bg-dark p-5">
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
       </div>
       <Container>
-        <h2 className='pt-5'>
+        <h2 className="pt-5">
           {userData.savedBooks.length
-            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
-            : 'You have no saved books!'}
+            ? `Viewing ${userData.savedBooks.length} saved ${
+                userData.savedBooks.length === 1 ? "book" : "books"
+              }:`
+            : "You have no saved books!"}
         </h2>
         <Row>
           {userData.savedBooks.map((book) => {
             return (
               <Col md="4" key={book.bookId}>
-                <Card border='dark'>
-                  {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
+                <Card border="dark">
+                  {book.image ? (
+                    <Card.Img
+                      src={book.image}
+                      alt={`The cover for ${book.title}`}
+                      variant="top"
+                    />
+                  ) : null}
                   <Card.Body>
                     <Card.Title>{book.title}</Card.Title>
-                    <p className='small'>Authors: {book.authors}</p>
+                    <p className="small">Authors: {book.authors.join(", ")}</p>
                     <Card.Text>{book.description}</Card.Text>
-                    <Button className='btn-block btn-danger' onClick={() => handleDeleteBook(book.bookId)}>
+                    <Button
+                      className="btn-block btn-danger"
+                      onClick={() => handleDeleteBook(book.bookId)}
+                    >
                       Delete this Book!
                     </Button>
                   </Card.Body>

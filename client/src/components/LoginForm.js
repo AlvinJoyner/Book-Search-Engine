@@ -1,26 +1,39 @@
-// see SignupForm.js for comments
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-//importing the useMutation hook from Apollo Client and the ADD_USER mutation operation from a separate file for use in a React component
-import { useMutation } from "@apollo/client";
-import { LOGIN_USER } from "../utils/mutations";
- 
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
-//
+
 const LoginForm = () => {
+  // State for form data
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
+  // State for form validation
   const [validated] = useState(false);
+  // State to show/hide the error alert
   const [showAlert, setShowAlert] = useState(false);
-// trying to force user to login 
+
+  // useMutation hook for login
+  const [login, { loading, error, data }] = useMutation(LOGIN_USER);
+
+  // useEffect hook to update the showAlert state based on error
+  useEffect(() => {
+    if (error) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
+  }, [error]);
+
+  // Function to handle input change
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
+  // Function to handle form submission
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -28,42 +41,36 @@ const LoginForm = () => {
     }
 
     try {
+      // Call login mutation
       const { loading, error, data } = await login({
         variables: { ...userFormData },
       });
-    
+
       if (loading) {
-        // Handle loading state if needed
         return;
       }
-    
+
       if (error) {
         console.error(error);
-        setShowAlert(true); // Set alert state to show error message
+        setShowAlert(true); // Show alert for error
         return;
       }
-    
+
       console.log(data);
-      Auth.login(data.login.token);
-    
+      Auth.login(data.login.token); // Call login function from Auth utility
+
       setUserFormData({
-        email: "",
-        password: "",
+        email: '',
+        password: '',
       });
     } catch (err) {
       console.error(err);
     }
-    
-
-    setUserFormData({
-      username: '',
-      email: '',
-      password: '',
-    });
   };
 
   return (
     <>
+      {/* Login Form */}
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your login credentials!

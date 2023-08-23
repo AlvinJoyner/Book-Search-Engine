@@ -11,6 +11,7 @@ import {
 import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
 import { useMutation } from "@apollo/client"; 
 import { SAVE_BOOK } from "../utils/mutations";
+import Auth from "../utils/auth";
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -44,7 +45,7 @@ const [saveBook] = useMutation(SAVE_BOOK);
     try {
      // Use the fetch function to send a GET request to the Google Books API
 // The API endpoint includes the search input in the query parameter to fetch book data based on the search input
-const response = await axios.get(
+const response = await fetch(
   `https://www.googleapis.com/books/v1/volumes?q=${searchInput}`
 );
 

@@ -20,7 +20,7 @@ const myServer = new ApolloServer({
 });
 
 // Middleware for parsing request bodies
-myApp.use(express.urlencoded({ extended: true }));
+myApp.use(express.urlencoded({ extended: false }));
 myApp.use(express.json());
 
 // Serve static assets if in production
