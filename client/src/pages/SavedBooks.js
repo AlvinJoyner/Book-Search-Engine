@@ -12,21 +12,13 @@ const SavedBooks = () => {
 
   const [removeBook] = useMutation(REMOVE_BOOK, {
     onCompleted: (data) => {
-      // Get the removed book's ID from the mutation response
       const removedBookId = data.removeBook.bookId;
-
-      // Update the user data by filtering out the removed book
       const updatedUser = {
         ...userData,
         savedBooks: userData.savedBooks.filter(
           (book) => book.bookId !== removedBookId
         ),
       };
-
-      // Update the user data in local state (use setUserData if available)
-      // setUserData(updatedUser); // Uncomment this if you have setUserData function
-
-      // Remove the book from local storage
       removeBookId(removedBookId);
     },
     onError: (error) => {
@@ -65,15 +57,15 @@ const SavedBooks = () => {
       </div>
       <Container>
         <h2 className="pt-5">
-          {userData.savedBooks.length
+          {userData.savedBooks && userData.savedBooks.length
             ? `Viewing ${userData.savedBooks.length} saved ${
                 userData.savedBooks.length === 1 ? "book" : "books"
               }:`
             : "You have no saved books!"}
         </h2>
         <Row>
-          {userData.savedBooks.map((book) => {
-            return (
+          {userData.savedBooks && userData.savedBooks.length ? (
+            userData.savedBooks.map((book) => (
               <Col md="4" key={book.bookId}>
                 <Card border="dark">
                   {book.image ? (
@@ -96,8 +88,10 @@ const SavedBooks = () => {
                   </Card.Body>
                 </Card>
               </Col>
-            );
-          })}
+            ))
+          ) : (
+            <p>You have no saved books!</p>
+          )}
         </Row>
       </Container>
     </>
